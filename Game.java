@@ -136,10 +136,11 @@ public class Game extends Application {
     
     public int move(int start, int value) {
         int beg = start;
+        
         for (int i = 0; i < value; i++) {
             start += 10;
         }
-        for (int i = 0; i < value; i++) start += 10;
+        
         return start;
     }
     
