@@ -138,8 +138,13 @@ public class Game extends Application {
     }
     
     public int move(int start, int value) {
-        // TODO: change move
-        return 0;
+        int beg = start;
+        
+        for (int i = 0; i < value; i++) {
+            start += 10;
+        }
+        
+        return start;
     }
     
     public int getIndex() {
