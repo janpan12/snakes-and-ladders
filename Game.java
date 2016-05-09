@@ -25,7 +25,10 @@ public class Game extends Application {
     private ImageView view = new ImageView(new Image("player.png"));
     
     public Game() {
+        // pane = place where to store different elements
         pane = new Pane();
+        
+        // scene = window of the program
         scene = new Scene(pane, 700, 700);
         grid = new Button[100];
         
@@ -72,7 +75,7 @@ public class Game extends Application {
         
         // update particular button
         try {
-            grid[9].setGraphic(view);
+            grid[0].setGraphic(view);
         } catch (Exception e) { System.out.println(e.getMessage()); };
         
         // TODO: time the dice is rolled, move the player that many spaces
@@ -135,12 +138,8 @@ public class Game extends Application {
     }
     
     public int move(int start, int value) {
-        int beg = start;
-        for (int i = 0; i < value; i++) {
-            start += 10;
-        }
-        for (int i = 0; i < value; i++) start += 10;
-        return start;
+        // TODO: change move
+        return 0;
     }
     
     public int getIndex() {
