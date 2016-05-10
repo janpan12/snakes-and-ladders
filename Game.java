@@ -10,6 +10,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+/** 
+ * @authors Isha Mangal & Janani Velchamy
+ * This program is modeled after the Snakes and Ladders game. 
+ * The player starts at the top left corner and moves up and down until it reaches the bottom right corner. 
+ **/
  
 public class Game extends Application {
     
