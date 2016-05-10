@@ -137,17 +137,51 @@ public class Game extends Application {
         });
     }
     
-    public int move(int start, int value) {
-        int beg = start;
-        
-        for (int i = 0; i < value; i++) {
-            start += 10;
+    private int move(int start, int value) {
+        if (Math.ceil((double) start / 10) % 2 != 0) {
+            return increment(start, value);
+        } else {
+            return decrement(start, value);
         }
-        
-        return start;
     }
     
-    public int getIndex() {
+    private int increment(int start, int value) {
+        int index = start;
+        for (int i = 0; i < value + 1; i++) {
+            if (index == 91) return -1;
+            if (index % 10 == 0 && index != 0) {
+                int remainder = Math.abs(value - i);
+                index += 10;
+                for (int j = 0; j < remainder - 1; j++) {
+                    if (index == 91) return -1;
+                    index--;
+                }
+                return index;
+            }
+            index++;
+        }
+        return index;
+    }
+    
+    private int decrement(int start, int value) {
+        int index = start;
+        for (int i = 0; i < value + 1; i++) {
+            if (index == 91) return -1;
+            if (index % 10 == 0 && index != 0) {
+                int remainder = Math.abs(value - i);
+                index += 10;
+                for (int j = 0; j < remainder - 1; j++) {
+                    if (index == 91) return -1;
+                    index++;
+                }
+                return index;
+            }
+            index--;
+        }
+        return index;
+    }
+    
+    private int getIndex() {
         int index = 0;
         for (Button b : grid) {
             if (!(b.getGraphic() == null)) return index;
