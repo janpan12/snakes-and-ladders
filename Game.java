@@ -7,15 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-/** 
- * @authors Isha Mangal & Janani Velchamy
- * This program is modeled after the Snakes and Ladders game. 
- * The player starts at the top left corner and moves up and down until it reaches the bottom right corner. 
- **/
  
 public class Game extends Application {
     
@@ -29,6 +22,11 @@ public class Game extends Application {
     private int diceValue = 0;
     
     private ImageView view = new ImageView(new Image("player.png"));
+    private ImageView snake = new ImageView(new Image("snake.png"));
+    private ImageView ladder = new ImageView(new Image("ladder.png"));
+    
+    private int[] snakeIndexes = {12, 33, 47, 63, 88, 95};
+    private int[] chuteIndexes = {5, 24, 34, 54, 77, 86};
     
     public Game() {
         // pane = place where to store different elements
@@ -38,8 +36,15 @@ public class Game extends Application {
         scene = new Scene(pane, 700, 700);
         grid = new Button[100];
         
+        view.setId("Player");
         view.setFitHeight(30);
         view.setFitWidth(30);
+        
+        snake.setFitHeight(10);
+        snake.setFitWidth(10);
+        
+        ladder.setFitHeight(30);
+        ladder.setFitWidth(30);
     }
     
     public static void main(String[] args) {
@@ -81,6 +86,11 @@ public class Game extends Application {
         
         // update particular button
         try {
+            for (int i = 0; i < grid.length; i++) {
+                if (grid[i].getGraphic() == null) {
+                    grid[i].setText(""+(i+1));
+                }
+            }
             grid[0].setGraphic(view);
         } catch (Exception e) { System.out.println(e.getMessage()); };
         
@@ -92,9 +102,23 @@ public class Game extends Application {
         
         // TODO: if the player lands on the start of the ladder, then move the
         // player to the end of the ladder
-        
+        for (int i : snakeIndexes) {
+            ImageView img = new ImageView(new Image("snake.png"));
+            img.setId("Snake");
+            img.setFitHeight(30);
+            img.setFitWidth(30);
+            grid[i].setGraphic(img);
+        }
+
         // TODO: if the player lands on the start of a chute, then move the player
         // to the end of the chute
+        for (int i : chuteIndexes) {
+            ImageView img = new ImageView(new Image("ladder.png"));
+            img.setId("Ladder");
+            img.setFitHeight(30);
+            img.setFitWidth(30);
+            grid[i].setGraphic(img);
+        }
         
         // TODO: if the player reaches the 100 tile, then have a dialog box that
         // says the player has won and exit the game when press exit
@@ -116,17 +140,36 @@ public class Game extends Application {
                 b.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        diceValue = (int) (Math.random() * 10) + 1;
+                        // set text
+                        
+                        
+                        diceValue = (int) (Math.random() * 5) + 1;
                         t.setText(text + diceValue);
                         
                         // determine index of move
                         int n = move(getIndex(), diceValue);
+                        System.out.println("You rolled " + diceValue);
                         
                         // remove image in old
                         grid[getIndex()].setGraphic(null);
                         
                         // set image in new
-                        grid[n].setGraphic(view);
+                        if (n < 0) {
+                            grid[99].setGraphic(view);
+                            System.out.println("Won");
+                        } else {
+                            if (grid[n].getGraphic() != null) {
+                                if (grid[n].getGraphic().getId().equals("Ladder")) {
+                                    System.out.println("Hit a ladder: moved up to " + (n+5));
+                                    grid[n+5].setGraphic(view);
+                                } else {
+                                    System.out.println("Hit a snake: moved down to " + (n-5));
+                                    grid[n-5].setGraphic(view);
+                                }
+                            } else {
+                                grid[n].setGraphic(view);
+                            }
+                        }
                     }
                 });
                 
@@ -144,53 +187,17 @@ public class Game extends Application {
     }
     
     private int move(int start, int value) {
-        if (Math.ceil((double) start / 10) % 2 != 0) {
-            return increment(start, value);
-        } else {
-            return decrement(start, value);
-        }
-    }
-    
-    private int increment(int start, int value) {
-        int index = start;
-        for (int i = 0; i < value + 1; i++) {
-            if (index == 91) return -1;
-            if (index % 10 == 0 && index != 0) {
-                int remainder = Math.abs(value - i);
-                index += 10;
-                for (int j = 0; j < remainder - 1; j++) {
-                    if (index == 91) return -1;
-                    index--;
-                }
-                return index;
-            }
-            index++;
-        }
-        return index;
-    }
-    
-    private int decrement(int start, int value) {
-        int index = start;
-        for (int i = 0; i < value + 1; i++) {
-            if (index == 91) return -1;
-            if (index % 10 == 0 && index != 0) {
-                int remainder = Math.abs(value - i);
-                index += 10;
-                for (int j = 0; j < remainder - 1; j++) {
-                    if (index == 91) return -1;
-                    index++;
-                }
-                return index;
-            }
-            index--;
-        }
-        return index;
+        int temp = start + value;
+        return temp <= 99 ? temp : -1;
     }
     
     private int getIndex() {
         int index = 0;
         for (Button b : grid) {
-            if (!(b.getGraphic() == null)) return index;
+            //System.out.println(b.getId());
+            if (b.getGraphic() != null && b.getGraphic().getId().equals("Player")) {
+                return index;
+            }
             index++;
         }
         return -1;
