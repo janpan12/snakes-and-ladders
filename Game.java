@@ -1,8 +1,14 @@
+import java.util.Optional;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -11,6 +17,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
  
 public class Game extends Application {
+    
+    private Alert alert;
+    private ButtonType yes;
+    private ButtonType no;
     
     private int gridX = 10;
     private int gridY = 10;
@@ -45,6 +55,10 @@ public class Game extends Application {
         
         ladder.setFitHeight(30);
         ladder.setFitWidth(30);
+        
+        alert = new Alert(AlertType.CONFIRMATION);
+        yes = new ButtonType("Yes", ButtonData.YES);
+        no = new ButtonType("No", ButtonData.CANCEL_CLOSE);
     }
     
     public static void main(String[] args) {
@@ -156,7 +170,8 @@ public class Game extends Application {
                         // set image in new
                         if (n < 0) {
                             grid[99].setGraphic(view);
-                            System.out.println("Won");
+                            endGame();
+                            System.out.println("Congrats! You won!!!\n");
                         } else {
                             if (grid[n].getGraphic() != null) {
                                 if (grid[n].getGraphic().getId().equals("Ladder")) {
@@ -184,6 +199,19 @@ public class Game extends Application {
                 stage.show();
             }
         });
+    }
+    
+    private void endGame() {
+        alert.setTitle("Snakes and Ladders");
+        alert.setHeaderText("Game Over");
+        alert.setContentText("Would you like to play again?");
+        alert.getButtonTypes().setAll(yes, no);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == yes){
+            grid[0].setGraphic(view);
+        } else {
+            System.exit(0);
+        }
     }
     
     private int move(int start, int value) {
